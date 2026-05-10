@@ -3,8 +3,10 @@ import '../services/auth_service.dart';
 import 'home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -58,13 +60,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _showMessage('Registrasi gagal, coba lagi.');
       }
     } catch (e) {
-      if (!mounted) return;
-      _showMessage('Terjadi kesalahan: ${e.toString()}');
+      if (mounted) {
+        _showMessage('Terjadi kesalahan: ${e.toString()}');
+      }
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -103,8 +107,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       TextFormField(
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
-                          labelText: 'Email',
+                          labelText: 'Email *',
                           prefixIcon: Icon(Icons.email_outlined),
                         ),
                         validator: (value) {
@@ -121,8 +127,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       TextFormField(
                         controller: passwordController,
                         obscureText: true,
+                        textInputAction: TextInputAction.next,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
-                          labelText: 'Password',
+                          labelText: 'Password *',
                           prefixIcon: Icon(Icons.lock_outline),
                         ),
                         validator: (value) {
@@ -139,8 +147,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       TextFormField(
                         controller: confirmPasswordController,
                         obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: const InputDecoration(
-                          labelText: 'Konfirmasi Password',
+                          labelText: 'Konfirmasi Password *',
                           prefixIcon: Icon(Icons.lock_outline),
                         ),
                         validator: (value) {
@@ -149,6 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
                           return null;
                         },
+                        onFieldSubmitted: (_) => register(),
                       ),
                     ],
                   ),

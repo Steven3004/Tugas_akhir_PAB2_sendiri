@@ -1,14 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
-  final CollectionReference posts =
-      FirebaseFirestore.instance.collection('posts');
+  final CollectionReference posts = FirebaseFirestore.instance.collection(
+    'posts',
+  );
 
-  Future<void> addPost(String userId, String title, String content) {
+  Future<void> addPost(
+    String userId,
+    String title,
+    String content,
+    String category,
+  ) {
     return posts.add({
       'userId': userId,
       'title': title,
       'content': content,
+      'category': category,
       'timestamp': Timestamp.now(),
     });
   }

@@ -4,8 +4,10 @@ import 'home_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -52,13 +54,15 @@ class _LoginScreenState extends State<LoginScreen> {
         _showMessage('Login gagal, periksa email dan password.');
       }
     } catch (e) {
-      if (!mounted) return;
-      _showMessage('Terjadi kesalahan saat login: ${e.toString()}');
+      if (mounted) {
+        _showMessage('Terjadi kesalahan saat login: ${e.toString()}');
+      }
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
