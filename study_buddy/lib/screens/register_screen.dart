@@ -1,71 +1,162 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
-import 'home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+
+  const RegisterScreen({
+    super.key,
+  });
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<RegisterScreen> createState() =>
+      _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final AuthService _auth = AuthService();
-  final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+class _RegisterScreenState
+    extends State<RegisterScreen> {
+
+  // ================= CONTROLLER =================
+  final nameController =
+      TextEditingController();
+
+  final emailController =
+      TextEditingController();
+
+  final passwordController =
+      TextEditingController();
+
+  final confirmPasswordController =
+      TextEditingController();
+
+  final _formKey =
+      GlobalKey<FormState>();
+
   bool _isLoading = false;
 
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-
+  // ================= REGISTER =================
   Future<void> register() async {
-    if (!_formKey.currentState!.validate()) return;
 
-    if (passwordController.text != confirmPasswordController.text) {
-      _showMessage('Password dan konfirmasi tidak cocok.');
+    if (!_formKey.currentState!
+        .validate()) {
+
+      return;
+    }
+
+    if (passwordController.text
+            .trim() !=
+        confirmPasswordController.text
+            .trim()) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Konfirmasi password tidak cocok',
+          ),
+        ),
+      );
+
       return;
     }
 
     setState(() {
+
       _isLoading = true;
     });
 
     try {
-      final user = await _auth.register(
-        emailController.text.trim(),
-        passwordController.text,
+
+      // CREATE USER
+      final credential =
+          await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+
+        email:
+            emailController.text
+                .trim(),
+
+        password:
+            passwordController.text
+                .trim(),
       );
+
+      // UPDATE PROFILE
+      await credential.user
+          ?.updateDisplayName(
+
+        nameController.text.trim(),
+      );
+
+      await credential.user
+          ?.reload();
 
       if (!mounted) return;
 
-      if (user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => HomeScreen()),
-        );
-      } else {
-        _showMessage('Registrasi gagal, coba lagi.');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+          content: Text(
+            'Register berhasil',
+          ),
+        ),
+      );
+
+      Navigator.pop(context);
+
+    } on FirebaseAuthException catch (e) {
+
+      String message =
+          'Register gagal';
+
+      if (e.code ==
+          'email-already-in-use') {
+
+        message =
+            'Email sudah digunakan';
       }
+
+      else if (e.code ==
+          'weak-password') {
+
+        message =
+            'Password terlalu lemah';
+      }
+
+      else if (e.code ==
+          'invalid-email') {
+
+        message =
+            'Email tidak valid';
+      }
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        SnackBar(
+          content: Text(message),
+        ),
+      );
+
     } catch (e) {
-      if (mounted) {
-        _showMessage('Terjadi kesalahan: ${e.toString()}');
-      }
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        SnackBar(
+          content: Text(
+            'Error: $e',
+          ),
+        ),
+      );
+
     } finally {
+
       if (mounted) {
+
         setState(() {
+
           _isLoading = false;
         });
       }
@@ -73,125 +164,292 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
+  void dispose() {
+
+    nameController.dispose();
+
+    emailController.dispose();
+
+    passwordController.dispose();
+
+    confirmPasswordController
+        .dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Daftar StudyBuddy')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Buat akun baru',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Daftar sekarang untuk mulai berbagi dan belajar bersama komunitas StudyBuddy.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, color: Colors.black54),
-            ),
-            const SizedBox(height: 24),
-            Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: const InputDecoration(
-                          labelText: 'Email *',
-                          prefixIcon: Icon(Icons.email_outlined),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Email tidak boleh kosong.';
-                          }
-                          if (!value.contains('@')) {
-                            return 'Masukkan email yang valid.';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: passwordController,
-                        obscureText: true,
-                        textInputAction: TextInputAction.next,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: const InputDecoration(
-                          labelText: 'Password *',
-                          prefixIcon: Icon(Icons.lock_outline),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Password tidak boleh kosong.';
-                          }
-                          if (value.length < 6) {
-                            return 'Password minimal 6 karakter.';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: confirmPasswordController,
-                        obscureText: true,
-                        textInputAction: TextInputAction.done,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: const InputDecoration(
-                          labelText: 'Konfirmasi Password *',
-                          prefixIcon: Icon(Icons.lock_outline),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Konfirmasi password tidak boleh kosong.';
-                          }
-                          return null;
-                        },
-                        onFieldSubmitted: (_) => register(),
-                      ),
-                    ],
+
+      appBar: AppBar(
+        title: const Text(
+          'Register',
+        ),
+      ),
+
+      body: SafeArea(
+
+        child: SingleChildScrollView(
+
+          padding:
+              const EdgeInsets.all(
+            24,
+          ),
+
+          child: Form(
+
+            key: _formKey,
+
+            child: Column(
+
+              crossAxisAlignment:
+                  CrossAxisAlignment.stretch,
+
+              children: [
+
+                const SizedBox(
+                  height: 20,
+                ),
+
+                // ================= ICON =================
+                const Icon(
+
+                  Icons.person_add,
+
+                  size: 90,
+
+                  color: Colors.blue,
+                ),
+
+                const SizedBox(
+                  height: 24,
+                ),
+
+                // ================= TITLE =================
+                const Text(
+
+                  'Create Account',
+
+                  textAlign:
+                      TextAlign.center,
+
+                  style: TextStyle(
+
+                    fontSize: 28,
+
+                    fontWeight:
+                        FontWeight.bold,
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _isLoading ? null : register,
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              child: _isLoading
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Text('Daftar', style: TextStyle(fontSize: 16)),
+
+                const Text(
+
+                  'Daftar untuk mulai belajar bersama',
+
+                  textAlign:
+                      TextAlign.center,
+
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 40,
+                ),
+
+                // ================= NAME =================
+                TextFormField(
+
+                  controller:
+                      nameController,
+
+                  decoration:
+                      const InputDecoration(
+
+                    labelText:
+                        'Nama Lengkap',
+
+                    prefixIcon:
+                        Icon(Icons.person),
+                  ),
+
+                  validator: (
+                    value,
+                  ) {
+
+                    if (value == null ||
+                        value
+                            .trim()
+                            .isEmpty) {
+
+                      return 'Nama wajib diisi';
+                    }
+
+                    return null;
+                  },
+                ),
+
+                const SizedBox(
+                  height: 18,
+                ),
+
+                // ================= EMAIL =================
+                TextFormField(
+
+                  controller:
+                      emailController,
+
+                  keyboardType:
+                      TextInputType.emailAddress,
+
+                  decoration:
+                      const InputDecoration(
+
+                    labelText:
+                        'Email',
+
+                    prefixIcon:
+                        Icon(Icons.email),
+                  ),
+
+                  validator: (
+                    value,
+                  ) {
+
+                    if (value == null ||
+                        value
+                            .trim()
+                            .isEmpty) {
+
+                      return 'Email wajib diisi';
+                    }
+
+                    return null;
+                  },
+                ),
+
+                const SizedBox(
+                  height: 18,
+                ),
+
+                // ================= PASSWORD =================
+                TextFormField(
+
+                  controller:
+                      passwordController,
+
+                  obscureText: true,
+
+                  decoration:
+                      const InputDecoration(
+
+                    labelText:
+                        'Password',
+
+                    prefixIcon:
+                        Icon(Icons.lock),
+                  ),
+
+                  validator: (
+                    value,
+                  ) {
+
+                    if (value == null ||
+                        value
+                            .trim()
+                            .isEmpty) {
+
+                      return 'Password wajib diisi';
+                    }
+
+                    if (value.length < 6) {
+
+                      return 'Minimal 6 karakter';
+                    }
+
+                    return null;
+                  },
+                ),
+
+                const SizedBox(
+                  height: 18,
+                ),
+
+                // ================= CONFIRM PASSWORD =================
+                TextFormField(
+
+                  controller:
+                      confirmPasswordController,
+
+                  obscureText: true,
+
+                  decoration:
+                      const InputDecoration(
+
+                    labelText:
+                        'Konfirmasi Password',
+
+                    prefixIcon:
+                        Icon(Icons.lock_outline),
+                  ),
+
+                  validator: (
+                    value,
+                  ) {
+
+                    if (value == null ||
+                        value
+                            .trim()
+                            .isEmpty) {
+
+                      return 'Konfirmasi password wajib diisi';
+                    }
+
+                    return null;
+                  },
+                ),
+
+                const SizedBox(
+                  height: 30,
+                ),
+
+                // ================= BUTTON =================
+                ElevatedButton(
+
+                  onPressed:
+                      _isLoading
+                          ? null
+                          : register,
+
+                  child:
+                      _isLoading
+
+                          ? const SizedBox(
+
+                              width: 22,
+                              height: 22,
+
+                              child:
+                                  CircularProgressIndicator(
+                                strokeWidth:
+                                    2,
+                              ),
+                            )
+
+                          : const Text(
+                              'Register',
+                            ),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Sudah punya akun? Masuk'),
-            ),
-          ],
+          ),
         ),
       ),
     );
