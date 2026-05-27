@@ -1,5 +1,3 @@
-// lib/models/post.dart
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post {
@@ -43,7 +41,6 @@ class Post {
     this.createdAt,
   });
 
-  // ================= TO MAP =================
   Map<String, dynamic> toMap() {
     return {
       'title': title,
@@ -72,7 +69,6 @@ class Post {
     };
   }
 
-  // ================= FROM FIRESTORE =================
   factory Post.fromFirestore(
     DocumentSnapshot doc,
   ) {

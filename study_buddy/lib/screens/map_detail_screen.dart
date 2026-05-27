@@ -23,12 +23,10 @@ class MapDetailScreen extends StatelessWidget {
           ? const Center(child: Text('Lokasi tidak tersedia'))
           : Stack(
               children: [
-                // ================= MAP =================
                 FlutterMap(
                   options: MapOptions(initialCenter: location, initialZoom: 15),
 
                   children: [
-                    // ================= TILE =================
                     TileLayer(
                       urlTemplate:
                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -36,7 +34,6 @@ class MapDetailScreen extends StatelessWidget {
                       userAgentPackageName: 'com.studybuddy.app',
                     ),
 
-                    // ================= MARKER =================
                     MarkerLayer(
                       markers: [
                         Marker(
@@ -59,7 +56,6 @@ class MapDetailScreen extends StatelessWidget {
                   ],
                 ),
 
-                // ================= INFO CARD =================
                 Positioned(
                   bottom: 20,
 

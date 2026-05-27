@@ -39,7 +39,6 @@ class FavoriteScreen extends StatelessWidget {
           snapshot,
         ) {
 
-          // ================= LOADING =================
           if (snapshot.connectionState ==
               ConnectionState.waiting) {
 
@@ -50,7 +49,6 @@ class FavoriteScreen extends StatelessWidget {
             );
           }
 
-          // ================= ERROR =================
           if (snapshot.hasError) {
 
             return Center(
@@ -60,8 +58,6 @@ class FavoriteScreen extends StatelessWidget {
               ),
             );
           }
-
-          // ================= EMPTY =================
           if (!snapshot.hasData ||
               snapshot.data!.isEmpty) {
 
@@ -100,7 +96,6 @@ class FavoriteScreen extends StatelessWidget {
           final posts =
               snapshot.data!;
 
-          // ================= LIST =================
           return ListView.builder(
 
             padding:
@@ -124,7 +119,6 @@ class FavoriteScreen extends StatelessWidget {
 
                 post: post,
 
-                // DETAIL
                 onTap: () {
 
                   Navigator.push(
@@ -141,7 +135,6 @@ class FavoriteScreen extends StatelessWidget {
                   );
                 },
 
-                // FAVORITE
                 onFavorite: () async {
 
                   await firestoreService

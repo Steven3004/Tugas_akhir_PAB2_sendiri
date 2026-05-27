@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
 
-  // ================= THEME MODE =================
   ThemeMode _themeMode =
       ThemeMode.light;
 
-  // ================= GETTER =================
   ThemeMode get themeMode =>
       _themeMode;
 
   bool get isDarkMode =>
       _themeMode == ThemeMode.dark;
 
-  // ================= TOGGLE =================
   void toggleTheme() {
 
     _themeMode =
@@ -26,7 +23,6 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ================= LIGHT THEME =================
   ThemeData get lightTheme {
 
     return ThemeData(
@@ -50,7 +46,6 @@ class ThemeProvider extends ChangeNotifier {
         elevation: 0,
       ),
 
-      // FIX ERROR
       cardTheme:
           CardThemeData(
 
@@ -125,7 +120,6 @@ class ThemeProvider extends ChangeNotifier {
     );
   }
 
-  // ================= DARK THEME =================
   ThemeData get darkTheme {
 
     return ThemeData.dark().copyWith(
@@ -146,7 +140,6 @@ class ThemeProvider extends ChangeNotifier {
         elevation: 0,
       ),
 
-      // FIX ERROR
       cardTheme:
           CardThemeData(
 

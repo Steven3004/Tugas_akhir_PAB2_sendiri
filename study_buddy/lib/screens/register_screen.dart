@@ -15,7 +15,6 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState
     extends State<RegisterScreen> {
 
-  // ================= CONTROLLER =================
   final nameController =
       TextEditingController();
 
@@ -33,7 +32,6 @@ class _RegisterScreenState
 
   bool _isLoading = false;
 
-  // ================= REGISTER =================
   Future<void> register() async {
 
     if (!_formKey.currentState!
@@ -67,7 +65,6 @@ class _RegisterScreenState
 
     try {
 
-      // CREATE USER
       final credential =
           await FirebaseAuth.instance
               .createUserWithEmailAndPassword(
@@ -81,7 +78,6 @@ class _RegisterScreenState
                 .trim(),
       );
 
-      // UPDATE PROFILE
       await credential.user
           ?.updateDisplayName(
 
@@ -213,7 +209,6 @@ class _RegisterScreenState
                   height: 20,
                 ),
 
-                // ================= ICON =================
                 const Icon(
 
                   Icons.person_add,
@@ -227,7 +222,6 @@ class _RegisterScreenState
                   height: 24,
                 ),
 
-                // ================= TITLE =================
                 const Text(
 
                   'Create Account',
@@ -264,7 +258,6 @@ class _RegisterScreenState
                   height: 40,
                 ),
 
-                // ================= NAME =================
                 TextFormField(
 
                   controller:
@@ -300,7 +293,6 @@ class _RegisterScreenState
                   height: 18,
                 ),
 
-                // ================= EMAIL =================
                 TextFormField(
 
                   controller:
@@ -339,7 +331,6 @@ class _RegisterScreenState
                   height: 18,
                 ),
 
-                // ================= PASSWORD =================
                 TextFormField(
 
                   controller:
@@ -382,7 +373,6 @@ class _RegisterScreenState
                   height: 18,
                 ),
 
-                // ================= CONFIRM PASSWORD =================
                 TextFormField(
 
                   controller:
@@ -420,7 +410,6 @@ class _RegisterScreenState
                   height: 30,
                 ),
 
-                // ================= BUTTON =================
                 ElevatedButton(
 
                   onPressed:

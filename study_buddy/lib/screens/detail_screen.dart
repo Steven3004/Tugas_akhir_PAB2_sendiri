@@ -16,7 +16,6 @@ class _DetailScreenState extends State<DetailScreen> {
   final FirestoreService _firestoreService = FirestoreService();
   final TextEditingController commentController = TextEditingController();
 
-  // ================= ADD COMMENT =================
   Future<void> _addComment() async {
     if (commentController.text.trim().isEmpty) {
       return;
@@ -37,7 +36,6 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
-  // ================= IMAGE HANDLER =================
   Widget _buildImage() {
     final img = widget.post.image;
 
@@ -57,7 +55,6 @@ class _DetailScreenState extends State<DetailScreen> {
       );
     }
 
-    // BASE64 IMAGE
     try {
       final bytes = base64Decode(img);
 
@@ -75,7 +72,6 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
-  // ================= ERROR IMAGE =================
   Widget _errorImage() {
     return Container(
       height: 260,
@@ -99,18 +95,14 @@ class _DetailScreenState extends State<DetailScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.post.title ?? 'Detail Post')),
 
-      // ================= BODY =================
       body: ListView(
         children: [
-          // ================= IMAGE =================
           _buildImage(),
-          // ================= CONTENT =================
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // CATEGORY
                 if (widget.post.category != null &&
                     widget.post.category!.isNotEmpty)
                   Container(
@@ -131,7 +123,6 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                   ),
                 const SizedBox(height: 14),
-                // TITLE
                 Text(
                   widget.post.title ?? '',
                   style: const TextStyle(
@@ -140,13 +131,11 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                 ),
                 const SizedBox(height: 14),
-                // DESCRIPTION
                 Text(
                   widget.post.description ?? '',
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 20),
-                // USER INFO
                 Row(
                   children: [
                     const CircleAvatar(child: Icon(Icons.person)),
@@ -160,7 +149,6 @@ class _DetailScreenState extends State<DetailScreen> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                // MAP BUTTON
                 if (widget.post.latitude != null &&
                     widget.post.longitude != null)
                   SizedBox(
@@ -179,13 +167,11 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                   ),
                 const SizedBox(height: 20),
-                // COMMENT TITLE
                 const Text(
                   'Komentar',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                // ================= INPUT COMMENT =================
                 Row(
                   children: [
                     Expanded(
@@ -200,20 +186,19 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    // FIXED: Wrapped the button or simplified its style to prevent layout explosion
                     SizedBox(
                       height:
-                          54, // Matches the default height of the outlined textfield perfectly
-                      width: 54, // Keeps the send button a nice, square shape
+                          54, 
+                      width: 54, 
                       child: ElevatedButton(
                         onPressed: _addComment,
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets
-                              .zero, // Clear default padding to center the icon perfectly
+                              .zero, 
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
                               14,
-                            ), // Matches the textfield border radius
+                            ), 
                           ),
                         ),
                         child: const Icon(Icons.send),
@@ -221,11 +206,9 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                   ],
                 ),
-                // ================= COMMENTS =================
                 StreamBuilder<QuerySnapshot>(
                   stream: _firestoreService.getComments(widget.post.id ?? ''),
                   builder: (context, snapshot) {
-                    // LOADING
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Padding(
                         padding: EdgeInsets.all(20),

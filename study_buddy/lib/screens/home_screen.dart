@@ -22,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final User? currentUser = FirebaseAuth.instance.currentUser;
 
-  // ================= LOGOUT =================
   Future<void> _logout() async {
     await FirebaseAuth.instance.signOut();
   }
@@ -32,12 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
-      // ================= APPBAR =================
       appBar: AppBar(
         title: const Text('Study Buddy'),
 
         actions: [
-          // ================= DARK MODE =================
           IconButton(
             onPressed: () {
               themeProvider.toggleTheme();
@@ -48,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // ================= FAVORITE =================
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -61,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.favorite),
           ),
 
-          // ================= PROFILE =================
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -74,34 +69,28 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.person),
           ),
 
-          // ================= LOGOUT =================
           IconButton(onPressed: _logout, icon: const Icon(Icons.logout)),
         ],
       ),
 
-      // ================= BODY =================
       body: StreamBuilder<List<Post>>(
         stream: _firestoreService.getPosts(),
 
         builder: (context, snapshot) {
-          // ================= LOADING =================
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // ================= ERROR =================
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          // ================= EMPTY =================
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('Belum ada postingan'));
           }
 
           final posts = snapshot.data!;
 
-          // ================= POSTS =================
           return ListView.builder(
             padding: const EdgeInsets.only(top: 10, bottom: 100),
 
@@ -112,7 +101,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
               return PostListItem(
                 post: post,
-                // ================= DETAIL =================
                 onTap: () {
                   try {
                     print(
@@ -135,7 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 },
 
-                // ================= FAVORITE =================
                 onFavorite: () async {
                   await _firestoreService.toggleFavorite(
                     post.id!,
@@ -143,7 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
 
-                // ================= DELETE =================
                 onDelete: post.id == null
                     ? null
                     : () async {
@@ -183,7 +169,6 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
 
-      // ================= FLOATING BUTTON =================
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(

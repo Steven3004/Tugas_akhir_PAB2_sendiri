@@ -16,7 +16,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState
     extends State<LoginScreen> {
 
-  // ================= CONTROLLER =================
   final emailController =
       TextEditingController();
 
@@ -28,7 +27,6 @@ class _LoginScreenState
 
   bool _isLoading = false;
 
-  // ================= LOGIN =================
   Future<void> login() async {
 
     if (!_formKey.currentState!
@@ -151,7 +149,6 @@ class _LoginScreenState
 
                 children: [
 
-                  // ================= LOGO =================
                   const Icon(
 
                     Icons.school,
@@ -165,18 +162,12 @@ class _LoginScreenState
                     height: 20,
                   ),
 
-                  // ================= TITLE =================
                   const Text(
-
                     'Study Buddy',
-
                     textAlign:
                         TextAlign.center,
-
                     style: TextStyle(
-
                       fontSize: 32,
-
                       fontWeight:
                           FontWeight.bold,
                     ),
@@ -202,7 +193,6 @@ class _LoginScreenState
                     height: 40,
                   ),
 
-                  // ================= EMAIL =================
                   TextFormField(
 
                     controller:
@@ -241,7 +231,6 @@ class _LoginScreenState
                     height: 18,
                   ),
 
-                  // ================= PASSWORD =================
                   TextFormField(
 
                     controller:
@@ -284,40 +273,30 @@ class _LoginScreenState
                     height: 30,
                   ),
 
-                  // ================= LOGIN BUTTON =================
                   ElevatedButton(
-
                     onPressed:
                         _isLoading
                             ? null
                             : login,
-
                     child:
                         _isLoading
-
                             ? const SizedBox(
-
                                 height: 22,
-
                                 width: 22,
-
                                 child:
                                     CircularProgressIndicator(
                                   strokeWidth:
                                       2,
                                 ),
                               )
-
                             : const Text(
                                 'Login',
                               ),
                   ),
-
                   const SizedBox(
                     height: 20,
                   ),
 
-                  // ================= REGISTER =================
                   Row(
 
                     mainAxisAlignment:

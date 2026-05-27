@@ -95,7 +95,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
     }
   }
 
-  // CATEGORY SELECT
   void _showCategorySelect() {
     showModalBottomSheet(
       context: context,
@@ -118,7 +117,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 
-  // SUBMIT POST
   Future<void> _submitPost() async {
     if (_base64Image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -142,7 +140,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
       _isSubmitting = true;
     });
 
-    //ambil user id dan full name dari firebaseauth
     final userId = FirebaseAuth.instance.currentUser?.uid;
     final fullName = FirebaseAuth.instance.currentUser?.displayName;
     try {
@@ -151,7 +148,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       }
 
       final post = Post(
-        title: _category, // Use category as title for display
+        title: _category, 
         description: _descriptionController.text,
         image: _base64Image,
         category: _category,
@@ -183,7 +180,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
     }
   }
 
-  // GENERATE DESCRIPTION WITH AI
   Future<void> _generateDescriptionWithAI() async {
     if (_base64Image == null) return;
     setState(() => _isGenerating = true);
@@ -329,7 +325,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 
-  // IMAGE PREVIEW WIDGET
   Widget _buildImagePreview() {
     if (_base64Image == null) {
       return Container(
@@ -356,7 +351,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
     );
   }
 
-  // LOCATION INFO WIDGET
   Widget _buildLocationInfo() {
     if (_latitude == null || _longitude == null) {
       return const Text('Lokasi belum diambil');
